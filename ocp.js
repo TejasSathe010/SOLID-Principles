@@ -1,52 +1,48 @@
-// Bad Example
-class Shape {
-    constructor() {
-      this.type = "";
-    }
-  
-    draw() {
-      // Draw shape
-    }
+class Book {
+  constructor(title, price) {
+    this.title = title;
+    this.price = price;
   }
-  
-  class Square extends Shape {
-    constructor() {
-      super();
-      this.type = "square";
-    }
-  
-    draw() {
-      // Draw square
-    }
+}
+
+class Order {
+  constructor(books, priceCalculator) {
+    this.books = books;
+    this.priceCalculator = priceCalculator;
   }
-  
-  class Circle extends Shape {
-    constructor() {
-      super();
-      this.type = "circle";
-    }
-  
-    draw() {
-      // Draw circle
-    }
+
+  calculateTotalPrice() {
+    return this.priceCalculator.calculateTotalPrice(this.books);
   }
-  
-  // Good Example
-  class Shape {
-    draw() {
-      throw new Error("This method should be overridden");
-    }
+}
+
+class PriceCalculator {
+  calculateTotalPrice(books) {
+    let totalPrice = 0;
+    books.forEach(book => {
+      totalPrice += book.price;
+    });
+    return totalPrice;
   }
-  
-  class Square extends Shape {
-    draw() {
-      // Draw square
-    }
+}
+
+class DiscountPriceCalculator extends PriceCalculator {
+  constructor(discountPercentage) {
+    super();
+    this.discountPercentage = discountPercentage;
   }
-  
-  class Circle extends Shape {
-    draw() {
-      // Draw circle
-    }
+
+  calculateTotalPrice(books) {
+    let totalPrice = super.calculateTotalPrice(books);
+    return totalPrice * (1 - this.discountPercentage / 100);
   }
-  
+}
+
+const books = [
+  new Book("The Hobbit", 10),
+  new Book("To Kill a Mockingbird", 12),
+  new Book("Harry Potter", 15)
+];
+
+const order = new Order(books, new DiscountPriceCalculator(10));
+console.log(order.calculateTotalPrice()); // Output: 33.3
